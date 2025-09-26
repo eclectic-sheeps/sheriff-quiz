@@ -1,0 +1,65 @@
+<script>
+    // Show popup when button clicked
+    const modal = document.getElementById('quiz-modal');
+    document.getElementById('open-quiz-btn').addEventListener('click', () => {
+      modal.style.display = 'flex';
+    });
+  
+    // State requirements
+    const requirements = {
+      "Alabama": { age:25, relocate:true, diploma:true, citizen:true, felony:false, training:true },
+      "Alaska": { age:21, relocate:true, diploma:true, citizen:true, felony:false, training:true },
+      "Arizona": { age:18, relocate:true, diploma:true, citizen:true, felony:false, training:true },
+      "Arkansas": { age:21, relocate:true, diploma:true, citizen:true, felony:false, training:true },
+      "California": { age:18, relocate:true, diploma:true, citizen:true, felony:false, training:true },
+      "Colorado": { age:18, relocate:true, diploma:true, citizen:true, felony:false, training:true },
+      "Connecticut": { age:18, diploma:true, citizen:true, felony:false, training:true },
+      // ... (keep all other states here)
+      "Wyoming": { age:18, relocate:true, diploma:true, citizen:true, felony:false }
+    };
+  
+    const submitBtn = document.getElementById('submit-btn');
+    const quizWrapper = document.querySelector('.quiz-wrapper');
+  
+    submitBtn.addEventListener('click', () => {
+      const ageValue = parseInt(document.querySelector('input[name="age"]:checked')?.value || 0);
+      const relocateValue = document.querySelector('input[name="relocate"]:checked')?.value === "yes";
+      const diplomaValue = document.querySelector('input[name="diploma"]:checked')?.value === "yes";
+      const citizenValue = document.querySelector('input[name="citizen"]:checked')?.value === "yes";
+      const felonyValue = document.querySelector('input[name="felony"]:checked')?.value === "yes";
+      const trainingValue = document.querySelector('input[name="training"]:checked')?.value === "yes";
+  
+      const qualifiedStates = [];
+      for (const state in requirements) {
+        const req = requirements[state];
+        if (
+          ageValue >= req.age &&
+          (!req.relocate || relocateValue) &&
+          (!req.training || trainingValue) &&
+          (!req.felony || !felonyValue) &&
+          (!req.diploma || diplomaValue) &&
+          (!req.citizen || citizenValue)
+        ) {
+          qualifiedStates.push(state);
+        }
+      }
+  
+      // Replace quiz content with results
+      quizWrapper.innerHTML = `
+        <h1 style="text-align:center;">Congratulations!</h1>
+        <p style="text-align:center;">You are eligible in the following states:</p>
+        <ul style="text-align:left; max-width:400px; margin:1rem auto;">
+          ${qualifiedStates.map(s => `<li>${s}</li>`).join('')}
+        </ul>
+        <div style="text-align:center; margin-top:1rem;">
+          <button id="close-btn" style="padding:0.5rem 1rem; font-size:1rem; cursor:pointer; background:#1f3a93; color:#fff; border:none; border-radius:6px;">Close</button>
+        </div>
+      `;
+  
+      document.getElementById('close-btn').addEventListener('click', () => {
+        modal.style.display = 'none';
+        location.reload(); // reset quiz if needed
+      });
+    });
+  </script>
+  
